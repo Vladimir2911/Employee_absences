@@ -34,14 +34,14 @@ namespace Сalculating_employee_absences
         { 
             Employee employee = new Employee();
             employee.Name=AddEmployeTextBox.Text;
-            MessageBox.Show(employee.Name);
+            employee.Department = ComboBox1.Text;
+            MessageBox.Show(employee.Name +" \n"+ employee.Department);
             using (MyDbContext myDb = new MyDbContext())
             {
-                myDb.Employees.Add(employee);
-               
-            }
-            MessageBox.Show("Done!!!");
-           
+                myDb.Employees.Add(employee);    
+                myDb.SaveChanges();
+            }           
+            this.Close();            
         }
     }
 }

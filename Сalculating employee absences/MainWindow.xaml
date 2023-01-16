@@ -7,9 +7,9 @@
         mc:Ignorable="d"
         Title="График отсутствия сотрудников" Height="768" Width="1366">
     <Grid Margin="0,0,-30,0" Height="750" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
-        <ListBox HorizontalAlignment="Left" Height="605" Margin="10,10,0,0" VerticalAlignment="Top" Width="177" d:ItemsSource="{d:SampleData ItemCount=5}"/>
-        <Button Content="Добавить сотрудника" Name ="AddEmployeeButton"  HorizontalAlignment="Left" Height="20" Margin="26,629,0,0" VerticalAlignment="Top" Width="136" Click="AddEmployeeButton_Click"/>
-        <Button Content="Удалить сотрудника" Name ="RemuveEmployeeButton"  HorizontalAlignment="Left" Height="20" Margin="26,654,0,0" VerticalAlignment="Top" Width="136"/>
+        <ListBox Name="ListBoxEmployee" HorizontalAlignment="Left" Height="605" Margin="10,14,0,0" VerticalAlignment="Top" Width="177" d:ItemsSource="{d:SampleData ItemCount=5}"/>
+        <Button Content="Добавить сотрудника" Name ="AddEmployeeButton"  HorizontalAlignment="Left" Height="20" Margin="30,654,0,0" VerticalAlignment="Top" Width="136" Click="AddEmployeeButton_Click"/>
+        <Button Content="Удалить сотрудника" Name ="RemuveEmployeeButton"  HorizontalAlignment="Left" Height="20" Margin="30,679,0,0" VerticalAlignment="Top" Width="136" Click="RemuveEmployeeButton_Click"/>
         <Calendar Name="CalendarJanuary" HorizontalAlignment="Left" Height="171" Margin="236,-1,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
         <Calendar Name="CalendarFabruary" HorizontalAlignment="Left" Height="171" Margin="419,-1,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
         <Calendar Name="CalendarMarch" HorizontalAlignment="Center" Height="171" Margin="0,-1,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
@@ -24,6 +24,11 @@
         <Calendar Name="CalendarDesember" HorizontalAlignment="Left" Height="170" Margin="1152,164,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange" DisplayDate="2023-01-01" DisplayDateEnd="2023-12-31"/>
         <TextBox HorizontalAlignment="Left" Height="170" Margin="240,539,0,0" TextWrapping="Wrap" Text="Статистика" VerticalAlignment="Top" Width="1095"/>
         <TextBox HorizontalAlignment="Left" Height="160" Margin="240,339,0,0" TextWrapping="Wrap" Text="Примечание" VerticalAlignment="Top" Width="1095"/>
+        <Button Content="" HorizontalAlignment="Left" Height="33" Margin="187,658,0,0" VerticalAlignment="Top" Width="33" RenderTransformOrigin="0.583,0.627" Click="Button_Click">
+            <Button.Background>
+                <ImageBrush ImageSource="/Без названия.png"/>
+            </Button.Background>
+        </Button>
 
 
     </Grid>

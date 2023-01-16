@@ -42,13 +42,33 @@ namespace Сalculating_employee_absences
             CalendarOctober.DisplayDate = Convert.ToDateTime("01/10/" + year);
             CalendarNovember.DisplayDate = Convert.ToDateTime("01/11/" + year);
             CalendarDesember.DisplayDate = Convert.ToDateTime("01/12/" + year);
-           
+
         }
 
         private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
-           AddEmployeDialog addEmployeDialog = new AddEmployeDialog();
+            AddEmployeDialog addEmployeDialog = new AddEmployeDialog();
+            
             addEmployeDialog.Show();
+            LoadData();
+        }
+    
+        public void LoadData()
+        {
+            using (MyDbContext myDb = new MyDbContext())
+            {              
+                ListBoxEmployee.ItemsSource = myDb.Employees.ToList().OrderBy(x=>x.Name);              
+            }
+        }
+
+        private void RemuveEmployeeButton_Click(object sender, RoutedEventArgs e)
+        {
+            
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            LoadData();
         }
     }
 }

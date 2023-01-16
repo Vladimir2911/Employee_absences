@@ -10,13 +10,15 @@ namespace Сalculating_employee_absences.Models
 {
     internal class MyDbContext : DbContext
     {
+        public MyDbContext()
+        {
+            Database.EnsureCreated();
+        }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Department> Departments { get; set; }
-
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Server=(LocalDB)\\MSSQLLocalDB;AttachDbFilename=\"Models\\EmployeeDatabase.mdf\";Integrated Security = True");
+            optionsBuilder.UseSqlite("Data Source=EmployeeDatabase.mdf");
         }
-        
+       
     }
 }
