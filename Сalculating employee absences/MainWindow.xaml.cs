@@ -25,6 +25,7 @@ namespace Сalculating_employee_absences
         {
             InitializeComponent();
             SetDefaultDates();
+
         }
 
         private void SetDefaultDates()
@@ -42,33 +43,90 @@ namespace Сalculating_employee_absences
             CalendarOctober.DisplayDate = Convert.ToDateTime("01/10/" + year);
             CalendarNovember.DisplayDate = Convert.ToDateTime("01/11/" + year);
             CalendarDesember.DisplayDate = Convert.ToDateTime("01/12/" + year);
+            LoadData();
 
         }
 
         private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
             AddEmployeDialog addEmployeDialog = new AddEmployeDialog();
-            
+
             addEmployeDialog.Show();
             LoadData();
         }
-    
+
         public void LoadData()
         {
             using (MyDbContext myDb = new MyDbContext())
-            {              
-                ListBoxEmployee.ItemsSource = myDb.Employees.ToList().OrderBy(x=>x.Name);              
+            {
+                ListBoxEmployee.ItemsSource = myDb.Employees.ToList().OrderBy(x => x.Name);
             }
         }
 
         private void RemuveEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
-            
+            using (MyDbContext myDb = new MyDbContext())
+            {
+                if (ListBoxEmployee.SelectedItem!=null)
+                {
+                    var itemToDelete = ListBoxEmployee.SelectedItem.ToString();                  
+                        Employee employee = myDb.Employees.FirstOrDefault(x => x.Name == itemToDelete);
+                        if (employee != null)
+                        {
+                            myDb.Employees.Remove(employee);
+                            myDb.SaveChanges();
+                            MessageBox.Show("Завпись удалена!");
+                        }
+                    else
+                    {
+                        MessageBox.Show("Ошибка");
+                    }
+                }
+
+            }
+            //    var itemToDelete = ListBoxEmployee.SelectedItem.ToString();
+            //    try
+            //    {
+            //        Employee employee = myDb.Employees.FirstOrDefault(x => x.Name == itemToDelete);
+            //        if (itemToDelete != null && employee != null)
+            //        {
+            //            myDb.Employees.Remove(employee);
+            //            myDb.SaveChanges();
+            //            MessageBox.Show("Завпись удалена!");
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show("Ошибка");
+            //    }
+            //}
+            LoadData(); 
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             LoadData();
+        } 
+        private void MenuHealthReason_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Health reason");
         }
+          private void MenuFamilyReason_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Family reason");
+        }
+          private void MenuVacation_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Vacation");
+        }
+          private void MenuUnknownReason_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Unknown reason");
+        }
+          private void MenuDeleteRecord_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Delete records");
+        }
+
     }
 }
