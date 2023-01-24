@@ -7,41 +7,53 @@
         mc:Ignorable="d"
         Title="График отсутствия сотрудников" Height="768" Width="1366">
     <Grid Margin="0,0,-30,0" Height="750" VerticalAlignment="Top" RenderTransformOrigin="0.5,0.5">
-        <ListBox Name="ListBoxEmployee" HorizontalAlignment="Left" Height="605" Margin="10,14,0,0" VerticalAlignment="Top" Width="177" d:ItemsSource="{d:SampleData ItemCount=5}"/>
-        <Button Content="Добавить сотрудника" Name ="AddEmployeeButton"  HorizontalAlignment="Left" Height="20" Margin="30,654,0,0" VerticalAlignment="Top" Width="136" Click="AddEmployeeButton_Click"/>
-        <Button Content="Удалить сотрудника" Name ="RemuveEmployeeButton"  HorizontalAlignment="Left" Height="20" Margin="30,679,0,0" VerticalAlignment="Top" Width="136" Click="RemuveEmployeeButton_Click"/>
+
         <Grid>
             <Calendar Name="CalendarJanuary" HorizontalAlignment="Left" Height="171" Margin="236,-1,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
             <Calendar Name="CalendarFabruary" HorizontalAlignment="Left" Height="171" Margin="419,-1,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarMarch" HorizontalAlignment="Center" Height="171" Margin="0,-1,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
+            <Calendar Name="CalendarMarch" HorizontalAlignment="Left" Height="171" Margin="600,-1,0,0" VerticalAlignment="Top" Width="186" SelectionMode="SingleRange"/>
             <Calendar Name="CalendarApril" HorizontalAlignment="Left" Height="171" Margin="785,-1,0,0" VerticalAlignment="Top" Width="189" SelectionMode="SingleRange"/>
             <Calendar Name="CalendarMay" HorizontalAlignment="Left" Height="171" Margin="969,-1,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
             <Calendar Name="CalendarJune" HorizontalAlignment="Left" Height="171" Margin="1152,-1,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarJuly" HorizontalAlignment="Left" Height="170" Margin="236,164,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
+            <Calendar Name="CalendarJuly" HorizontalAlignment="Left" Height="171" Margin="236,164,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
             <Calendar Name="CalendarAugust" HorizontalAlignment="Left" Height="171" Margin="419,164,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarSeptember" HorizontalAlignment="Center" Height="170" Margin="0,164,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarOctober" SelectedDate="12.05.2022"  HorizontalAlignment="Left" Height="170" Margin="785,164,0,0" VerticalAlignment="Top" Width="189" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarNovember" HorizontalAlignment="Left" Height="170" Margin="969,164,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarDesember" HorizontalAlignment="Left" Height="170" Margin="1152,164,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange" DisplayDate="2023-01-01" DisplayDateEnd="2023-12-31"/>
-            <TextBox HorizontalAlignment="Left" Height="160" Margin="240,339,0,0" TextWrapping="Wrap" Text="Примечание" VerticalAlignment="Top" Width="1095"/>
+            <Calendar Name="CalendarSeptember" HorizontalAlignment="Left" Height="171" Margin="600,164,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
+            <Calendar Name="CalendarOctober" HorizontalAlignment="Left" Height="171" Margin="785,164,0,0" VerticalAlignment="Top" Width="189" SelectionMode="SingleRange"/>
+            <Calendar Name="CalendarNovember" HorizontalAlignment="Left" Height="171" Margin="969,164,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
+            <Calendar Name="CalendarDesember" HorizontalAlignment="Left" Height="171" Margin="1152,164,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange" DisplayDate="2023-01-01" DisplayDateEnd="2023-12-31"/>
+            <TextBox Name="TextBoxNote" ToolTip="Примечание" HorizontalAlignment="Left" Height="95" Margin="240,344,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="1095" RenderTransformOrigin="0.498,-0.271"/>
+            <Grid HorizontalAlignment="Left" Height="740" VerticalAlignment="Top" Width="240"/>
+            <ListBox Name="ListBoxEmployee" HorizontalAlignment="Left" Height="605" Margin="10,14,0,0" VerticalAlignment="Top" Width="210" SelectionChanged="ListBoxEmployee_SelectionChanged">
+
+            </ListBox>
+            <Button Content="Добавить сотрудника" Name ="AddEmployeeButton"  HorizontalAlignment="Left" Height="20" Margin="30,640,0,0" VerticalAlignment="Top" Width="145" Click="AddEmployeeButton_Click"/>
+            <Button Content="Удалить сотрудника" Name ="RemuveEmployeeButton"  HorizontalAlignment="Left" Height="20" Margin="30,665,0,0" VerticalAlignment="Top" Width="145" Click="RemuveEmployeeButton_Click"/>
             <Grid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="MenuHealthReason" Header="По состоянию здоровья" Click="MenuHealthReason_Click" />
                     <MenuItem Name="MenuFamilyReason" Header="По семейным обстоятельствам" Click="MenuFamilyReason_Click"/>
                     <MenuItem Name="MenuVacation" Header="Отпуск" Click="MenuVacation_Click" />
                     <MenuItem Name="MenuUnknownReason" Header="По не выясненым причинам" Click="MenuUnknownReason_Click" />
-                    <MenuItem Name="MenuDeleteRecord" Header="Удалить запись" Click="MenuDeleteRecord_Click" />                    
+                    <MenuItem Name="MenuDeleteRecord" Header="Удалить запись" Click="MenuDeleteRecord_Click" />
                 </ContextMenu>
             </Grid.ContextMenu>
         </Grid>
-        <TextBox HorizontalAlignment="Left" Height="170" Margin="240,539,0,0" TextWrapping="Wrap" Text="Статистика" VerticalAlignment="Top" Width="1095"/>
-     
+        <TextBox Name="TextBoxStatistic" HorizontalAlignment="Left" Height="255" Margin="240,454,0,0" TextWrapping="Wrap" Text="Статистика" VerticalAlignment="Top" Width="1095"/>
+
         <Button Content="" HorizontalAlignment="Left" Height="33" Margin="187,658,0,0" VerticalAlignment="Top" Width="33" RenderTransformOrigin="0.583,0.627" Click="Button_Click">
             <Button.Background>
                 <ImageBrush ImageSource="/Без названия.png"/>
             </Button.Background>
         </Button>
-
-
+        <Button Content="Общая статистика" Name="StatButon" HorizontalAlignment="Left" Height="20" Margin="30,691,0,0" VerticalAlignment="Top" Width="145" Click="StatButon_Click" RenderTransformOrigin="0.5,0.5">
+            <Button.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform AngleX="2.603"/>
+                    <RotateTransform/>
+                    <TranslateTransform X="0.705"/>
+                </TransformGroup>
+            </Button.RenderTransform>
+        </Button>
     </Grid>
 </Window>

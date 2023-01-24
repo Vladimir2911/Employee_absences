@@ -13,12 +13,18 @@ namespace Сalculating_employee_absences.Models
         public MyDbContext()
         {
             Database.EnsureCreated();
+          //  Database.SetCommandTimeout(600);
         }
         public DbSet<Employee> Employees { get; set; }
+        public DbSet<Period> Periods { get; set; }
+
+        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        //{
+        //    optionsBuilder.UseSqlite("Data Source=EmployeeDatabase.mdf");
+        //}
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=EmployeeDatabase.mdf");
+            optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=AnnaDatabase;Trusted_Connection=True");
         }
-       
     }
 }
