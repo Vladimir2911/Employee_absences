@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Сalculating_employee_absences.Models;
 
+
 namespace Сalculating_employee_absences
 {
     /// <summary>
@@ -20,9 +21,11 @@ namespace Сalculating_employee_absences
     /// </summary>
     public partial class AddEmployeDialog : Window
     {
+      
         public AddEmployeDialog()
         {
             InitializeComponent();
+            ComboBox1.ItemsSource = StaticResourses.Departments;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -30,18 +33,30 @@ namespace Сalculating_employee_absences
             this.Close();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        { 
+        private  void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            if (ComboBox1.Text == "")
+            {
+                MessageBox.Show("не выбран отдел!!");
+            }
+            else
+            {
+                Click();
+                this.Close();
+            }
+        }
+        public async void Click()
+        {
             Employee employee = new Employee();
-            employee.Name=AddEmployeTextBox.Text;
+            employee.Name = AddEmployeTextBox.Text;
             employee.Department = ComboBox1.Text;
-            MessageBox.Show(employee.Name +" \n"+ employee.Department);
+            MessageBox.Show(employee.Name + " \n" + employee.Department);
+
             using (MyDbContext myDb = new MyDbContext())
             {
-                myDb.Employees.Add(employee);    
-                myDb.SaveChanges();
-            }           
-            this.Close();            
+                myDb.Employees.Add(employee);
+                await myDb.SaveChangesAsync();
+            }
         }
     }
 }

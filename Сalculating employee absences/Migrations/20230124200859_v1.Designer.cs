@@ -12,7 +12,7 @@ using Сalculating_employee_absences.Models;
 namespace Сalculatingemployeeabsences.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20230123181124_v1")]
+    [Migration("20230124200859_v1")]
     partial class v1
     {
         /// <inheritdoc />
@@ -63,7 +63,7 @@ namespace Сalculatingemployeeabsences.Migrations
                     b.Property<int>("DaysCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("EmployeeId")
+                    b.Property<int>("EmployeeId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FirstDay")
@@ -83,15 +83,17 @@ namespace Сalculatingemployeeabsences.Migrations
             modelBuilder.Entity("Сalculating_employee_absences.Models.Period", b =>
                 {
                     b.HasOne("Сalculating_employee_absences.Models.Employee", "Employee")
-                        .WithMany("Absence")
-                        .HasForeignKey("EmployeeId");
+                        .WithMany("Periods")
+                        .HasForeignKey("EmployeeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("Сalculating_employee_absences.Models.Employee", b =>
                 {
-                    b.Navigation("Absence");
+                    b.Navigation("Periods");
                 });
 #pragma warning restore 612, 618
         }

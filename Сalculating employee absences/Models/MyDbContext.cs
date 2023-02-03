@@ -13,10 +13,10 @@ namespace Сalculating_employee_absences.Models
         public MyDbContext()
         {
             Database.EnsureCreated();
-          //  Database.SetCommandTimeout(600);
+           // Database.SetCommandTimeout(600);
         }
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Period> Periods { get; set; }
+        public DbSet<Period> Periods { get; set; }      
 
         //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         //{
@@ -25,6 +25,14 @@ namespace Сalculating_employee_absences.Models
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=AnnaDatabase;Trusted_Connection=True");
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Period>()
+                .HasOne(e => e.Employee)
+                .WithMany(p => p.Periods)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace Сalculating_employee_absences.Models
 {
@@ -13,7 +15,7 @@ namespace Сalculating_employee_absences.Models
     {
         public Employee()
         {
-            Absence = new List<Period>();
+            Periods = new List<Period>();            
         }
         public int Id { get; set; }
         [Required]
@@ -22,7 +24,7 @@ namespace Сalculating_employee_absences.Models
         public string Department { get; set; }
         public int PeriodId { get; set; }
         
-        public List<Period> Absence { get; set; }       
+        public List<Period> Periods { get; set; }
 
         public override string ToString()
         {

@@ -36,7 +36,7 @@ namespace Сalculatingemployeeabsences.Migrations
                     FirstDay = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DaysCount = table.Column<int>(type: "int", nullable: false),
                     DateNote = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EmployeeId = table.Column<int>(type: "int", nullable: true)
+                    EmployeeId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -45,7 +45,8 @@ namespace Сalculatingemployeeabsences.Migrations
                         name: "FK_Periods_Employees_EmployeeId",
                         column: x => x.EmployeeId,
                         principalTable: "Employees",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
