@@ -22,30 +22,29 @@ using System.IO;
 using System.Collections;
 
 namespace Сalculating_employee_absences
-{    
+{
+
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
         MyDbContext myDb = new MyDbContext();
-        ObservableCollection<Employee> employees;
-       
+        List<Employee> employees;
+
 
         public MainWindow()
         {
-            employees = new ObservableCollection<Employee>();
             InitializeComponent();
             InitializeCombobox();
             SetDefaultValues();
-            
         }
 
         private void InitializeCombobox()
-        {                       
+        {
             YearSelectionComboBox.ItemsSource = StaticResourses.Years;
-            YearSelectionComboBox.SelectedItem=DateTime.Now.Year;
-            DepartmentCombobox.ItemsSource = StaticResourses.Departments;            
+            YearSelectionComboBox.SelectedItem = DateTime.Now.Year;
+            DepartmentCombobox.ItemsSource = StaticResourses.Departments;
         }
 
         private void SetDefaultValues()
@@ -58,21 +57,19 @@ namespace Сalculating_employee_absences
         {
             AddEmployeDialog addEmployeDialog = new AddEmployeDialog();
             addEmployeDialog.Show();
-
+            LoadData();
         }
 
-        public async void LoadData()
+        public void LoadData()
         {
-            List<Employee> result;
-            if (DepartmentCombobox.SelectedItem == null)
+            if (DepartmentCombobox.SelectedItem == null || (string)DepartmentCombobox.SelectedValue == StaticResourses.Departments[0])
             {
-                result = myDb.Employees.Include(p => p.Periods).OrderBy(x => x.Name).ToList();
+                ListBoxEmployee.ItemsSource = myDb.Employees.Include(p => p.Periods).OrderBy(x => x.Name).ToList();
             }
             else
-            {
-                result = myDb.Employees.Include(p => p.Periods).OrderBy(x => x.Name).Where(d=>d.Department == DepartmentCombobox.SelectedItem).ToList();
-            }
-            ListBoxEmployee.ItemsSource = result;
+
+                ListBoxEmployee.ItemsSource = myDb.Employees.Include(p => p.Periods).OrderBy(x => x.Name).Where(p => p.Department == DepartmentCombobox.SelectedValue.ToString()).ToList();
+
         }
 
         private void RemuveEmployeeButton_Click(object sender, RoutedEventArgs e)
@@ -80,6 +77,7 @@ namespace Сalculating_employee_absences
             if (ListBoxEmployee.SelectedItem != null)
             {
                 var itemToDelete = (Employee)ListBoxEmployee.SelectedItem;
+
                 var employee = myDb.Employees.Include(p => p.Periods).FirstOrDefault(x => x.Name == itemToDelete.Name);
                 if (employee != null)
                 {
@@ -92,45 +90,37 @@ namespace Сalculating_employee_absences
             {
                 MessageBox.Show("Не выбран сотрудник");
             }
+
             ClearSelectedDates();
             RefreshCalendarDates();
-            try
-            {
-                ListBoxEmployee.SelectedIndex=0;
-            }
-            catch
-            {
-                MessageBox.Show("Error");
-            }
-            LoadData();
-
-
+            //LoadData();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+
             SetDefaultValues();
         }
         #region Context menu
         private void MenuHealthReason_Click(object sender, RoutedEventArgs e)
         {
-            InsertDataToDb("HealthReason");           
+            InsertDataToDb("HealthReason");
         }
         private void MenuFamilyReason_Click(object sender, RoutedEventArgs e)
         {
-            InsertDataToDb("FamilyReason");          
+            InsertDataToDb("FamilyReason");
         }
         private void MenuVacation_Click(object sender, RoutedEventArgs e)
         {
-            InsertDataToDb("Vacation");           
+            InsertDataToDb("Vacation");
         }
         private void MenuUnknownReason_Click(object sender, RoutedEventArgs e)
         {
-            InsertDataToDb("UnknownReason");          
+            InsertDataToDb("UnknownReason");
         }
         private void MenuDeleteRecord_Click(object sender, RoutedEventArgs e)
         {
-            DeleteDateFromDb();           
+            DeleteDateFromDb();
         }
         #endregion
 
@@ -182,6 +172,7 @@ namespace Сalculating_employee_absences
             }
             else
                 MessageBox.Show("Не выбран сотрудник");
+
             ClearSelectedDates();
             RefreshCalendarDates();
         }
@@ -230,20 +221,21 @@ namespace Сalculating_employee_absences
                     AbsencePeriod.AddRange(CalendarNovember.SelectedDates);
                     AbsencePeriod.AddRange(CalendarDesember.SelectedDates);
 
+                    if (CheckAvalibleDate(employee, AbsencePeriod))
+                    {
 
-                    Period period = new Period();
+                        Period period = new Period();
 
-                    period.Reason = _reason;
-                    period.DateNote = TextBoxNote.Text;
-                    period.FirstDay = AbsencePeriod[0];
-                    period.DaysCount = AbsencePeriod.Count;
+                        period.Reason = _reason;
+                        period.DateNote = TextBoxNote.Text;
+                        period.FirstDay = AbsencePeriod[0];
+                        period.DaysCount = AbsencePeriod.Count;
 
-                    employee.Periods.Add(period);
-
-                    MessageBox.Show(employee.Periods.Count().ToString());
-
-                    myDb.SaveChanges();
-                    MessageBox.Show($"Запись добавлена. Причина отсутствия {reason}");
+                        employee.Periods.Add(period);
+                        myDb.SaveChanges();
+                        MessageBox.Show($"Запись добавлена. Причина отсутствия {_reason}");
+                    }
+                    else MessageBox.Show("На выделенные даты уже существует запись у этого сотрудника.");
                 }
                 else
                 {
@@ -254,9 +246,29 @@ namespace Сalculating_employee_absences
             RefreshCalendarDates();
         }
 
+        private bool CheckAvalibleDate(Employee employee, List<DateTime> absencePeriod)
+        {
+            if (employee.Periods.Count == 0) return true;
+
+            foreach (var period in employee.Periods)
+            {
+                for (int i = 0; i < period.DaysCount; i++)
+                {
+                    foreach (DateTime date in absencePeriod)
+                    {
+                        if (period.FirstDay.AddDays(i) == date) return false;
+                    }
+                }
+
+            }
+            return true;
+
+        }
+
         private void RefreshCalendarDates()
         {
             var year = DateTime.Now.Year;
+            CalendarDesember.DisplayDate = Convert.ToDateTime("01/12/" + YearSelectionComboBox.SelectedItem.ToString());
             CalendarJanuary.DisplayDate = Convert.ToDateTime("01/01/" + YearSelectionComboBox.SelectedItem.ToString());
             CalendarFabruary.DisplayDate = Convert.ToDateTime("01/02/" + YearSelectionComboBox.SelectedItem.ToString());
             CalendarMarch.DisplayDate = Convert.ToDateTime("01/03/" + YearSelectionComboBox.SelectedItem.ToString());
@@ -268,7 +280,7 @@ namespace Сalculating_employee_absences
             CalendarSeptember.DisplayDate = Convert.ToDateTime("01/09/" + YearSelectionComboBox.SelectedItem.ToString());
             CalendarOctober.DisplayDate = Convert.ToDateTime("01/10/" + YearSelectionComboBox.SelectedItem.ToString());
             CalendarNovember.DisplayDate = Convert.ToDateTime("01/11/" + YearSelectionComboBox.SelectedItem.ToString());
-            CalendarDesember.DisplayDate = Convert.ToDateTime("01/12/" + YearSelectionComboBox.SelectedItem.ToString());
+            
         }
 
         private void ClearSelectedDates()
@@ -286,14 +298,14 @@ namespace Сalculating_employee_absences
             CalendarNovember.SelectedDates.Clear();
             CalendarDesember.SelectedDates.Clear();
         }
-
+        //выгрузка в ексель
         private void StatButon_Click(object sender, RoutedEventArgs e)
         {
             Excel.Application xlApp = new Microsoft.Office.Interop.Excel.Application();
 
             if (xlApp == null)
             {
-                MessageBox.Show("Excel is not properly installed!!");
+                MessageBox.Show("Excel не установлен!!");
                 return;
             }
 
@@ -327,7 +339,7 @@ namespace Сalculating_employee_absences
 
             for (int i = 0; i < employee.Count; i++)
             {
-                int dayVacation = 0, dayFamily = 0, dayHeals = 0, dayUnknown = 0;
+                int dayVacation = 0, dayFamily = 0, dayHealth = 0, dayUnknown = 0;
                 xlWorkSheet.Cells[i + 2, 1] = i + 1;
                 xlWorkSheet.Cells[i + 2, 2] = employee[i].Name;
                 StringBuilder sb = new StringBuilder();
@@ -337,21 +349,21 @@ namespace Сalculating_employee_absences
                     switch (period.Reason)
                     {
                         case "по не выясненых причинах":
-                            dayUnknown +=period.DaysCount;
+                            dayUnknown += period.DaysCount;
                             shortReason = "НВ";
                             break;
 
                         case "отпуск":
-                            dayVacation+=period.DaysCount;
+                            dayVacation += period.DaysCount;
                             shortReason = "О";
                             break;
 
                         case "по семейным обстоятельствам":
-                            dayFamily+=period.DaysCount;
+                            dayFamily += period.DaysCount;
                             shortReason = "СО";
                             break;
                         case "по состоянию здоровья":
-                            dayHeals+=period.DaysCount;
+                            dayHealth += period.DaysCount;
                             shortReason = "Б";
                             break;
 
@@ -371,13 +383,13 @@ namespace Сalculating_employee_absences
                         xlWorkSheet.Cells[i + 2, period.FirstDay.Month + 2] = sb.ToString();
                     }
                     xlWorkSheet.Cells[i + 2, 15] = dayVacation;
-                    xlWorkSheet.Cells[i + 2, 16] = dayHeals;
+                    xlWorkSheet.Cells[i + 2, 16] = dayHealth;
                     xlWorkSheet.Cells[i + 2, 17] = dayFamily;
                     xlWorkSheet.Cells[i + 2, 18] = dayUnknown;
                 }
             }
 
-            xlWorkBook.SaveAs($"{Directory.GetCurrentDirectory()}\\отпуск.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
+            xlWorkBook.SaveAs($"{Directory.GetCurrentDirectory()}\\{YearSelectionComboBox.SelectedValue}Отпуск.xls", Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue, Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
             xlWorkBook.Close(true, misValue, misValue);
             xlApp.Quit();
 
@@ -385,7 +397,7 @@ namespace Сalculating_employee_absences
             Marshal.ReleaseComObject(xlWorkBook);
             Marshal.ReleaseComObject(xlApp);
 
-            MessageBox.Show("Файл создан, ві можете его найти в текущей папке. файл отпуск.xls");
+            MessageBox.Show("Файл создан, вы можете его найти в текущей папке. файл Отпуск.xls");
 
             /*            Employee selectedItem = (Employee)ListBoxEmployee.SelectedItem;
                         StringBuilder outputString = new StringBuilder();
@@ -406,32 +418,47 @@ namespace Сalculating_employee_absences
 
         private void ListBoxEmployee_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            DisplayEmployeeInfo();
+        }
+
+        private void DisplayEmployeeInfo()
+        {
             Employee selectedItem = (Employee)ListBoxEmployee.SelectedItem;
             StringBuilder outputString = new StringBuilder();
             var instance = myDb.Employees.Include(x => x.Periods).FirstOrDefault(x => x.Name == selectedItem.Name);
-
+            if (instance == null)
+                return;
             outputString.AppendLine(instance.Department);
             outputString.AppendLine(instance.Name);
             foreach (var absPeriod in instance.Periods)
             {
-                outputString.Append($"Сотрудник отсутствовал на работе с {absPeriod.FirstDay.ToShortDateString()} по" +
-                    $" {absPeriod.FirstDay.AddDays(absPeriod.DaysCount - 1).ToShortDateString()} в течении {absPeriod.DaysCount} днея(й). {absPeriod.Reason}");
-                if (absPeriod.DateNote != "")
-                    outputString.AppendLine($"примечание: {absPeriod.DateNote}");
-                else outputString.AppendLine();
+                if (absPeriod.FirstDay.Year == (int)YearSelectionComboBox.SelectedItem)
+                {
+                    outputString.Append($"Сотрудник отсутствовал на работе с {absPeriod.FirstDay.ToShortDateString()} по" +
+                        $" {absPeriod.FirstDay.AddDays(absPeriod.DaysCount - 1).ToShortDateString()} в течении {absPeriod.DaysCount} днея(й). {absPeriod.Reason}");
+                    if (absPeriod.DateNote != "")
+                        outputString.AppendLine($"примечание: {absPeriod.DateNote}");
+                    else outputString.AppendLine();
+                }
             }
             TextBoxStatistic.Text = outputString.ToString();
         }
-      
+
         private void DepartmentCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             LoadData();
+
         }
 
         private void YearSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ClearSelectedDates();
             RefreshCalendarDates();
+        }
+
+        private void TextBoxStatistic_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

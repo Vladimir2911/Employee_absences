@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.IdentityModel.Tokens;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,7 +22,7 @@ namespace Сalculating_employee_absences
     /// </summary>
     public partial class AddEmployeDialog : Window
     {
-      
+
         public AddEmployeDialog()
         {
             InitializeComponent();
@@ -33,15 +34,21 @@ namespace Сalculating_employee_absences
             this.Close();
         }
 
-        private  void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (ComboBox1.Text == "")
+            if (AddEmployeTextBox.Text.IsNullOrEmpty())
+            {
+                MessageBox.Show("Введите имя сотрудника");
+                return;
+            }
+            else if (ComboBox1.Text == StaticResourses.Departments[0])
             {
                 MessageBox.Show("не выбран отдел!!");
+                return;
             }
-            else
+            else 
             {
-                Click();
+                Click();                
                 this.Close();
             }
         }
@@ -49,14 +56,16 @@ namespace Сalculating_employee_absences
         {
             Employee employee = new Employee();
             employee.Name = AddEmployeTextBox.Text;
-            employee.Department = ComboBox1.Text;
-            MessageBox.Show(employee.Name + " \n" + employee.Department);
+            employee.Department = ComboBox1.Text;            
+            MessageBox.Show("Добавлен " + employee.Name + " \n" + employee.Department);
 
             using (MyDbContext myDb = new MyDbContext())
             {
                 myDb.Employees.Add(employee);
                 await myDb.SaveChangesAsync();
             }
+           
         }
+      
     }
 }
