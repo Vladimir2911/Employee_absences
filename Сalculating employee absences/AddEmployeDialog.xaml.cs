@@ -22,11 +22,22 @@ namespace Сalculating_employee_absences
     /// </summary>
     public partial class AddEmployeDialog : Window
     {
-
+        bool editMode = false;
+        Employee employee;
         public AddEmployeDialog()
         {
+            editMode = false;
             InitializeComponent();
             ComboBox1.ItemsSource = StaticResourses.Departments;
+        }
+        public AddEmployeDialog(Employee employee)
+        {
+            InitializeComponent(); 
+            ComboBox1.ItemsSource = StaticResourses.Departments;
+            this.employee = employee;
+            editMode = true;
+            AddEmployeTextBox.Text = employee.Name;
+            ComboBox1.SelectedItem = employee.Department;           
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -34,29 +45,50 @@ namespace Сalculating_employee_absences
             this.Close();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        public async void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (AddEmployeTextBox.Text.IsNullOrEmpty())
+            if (!editMode)
             {
-                MessageBox.Show("Введите имя сотрудника");
-                return;
+                if (AddEmployeTextBox.Text.IsNullOrEmpty())
+                {
+                    MessageBox.Show("Введите имя сотрудника");
+                    return;
+                }
+                else if (ComboBox1.Text == StaticResourses.Departments[0])
+                {
+                    MessageBox.Show("не выбран отдел!!");
+                    return;
+                }
+                else
+                {
+                    Click();
+                    this.Close();
+                }
             }
-            else if (ComboBox1.Text == StaticResourses.Departments[0])
+            else
             {
-                MessageBox.Show("не выбран отдел!!");
-                return;
-            }
-            else 
-            {
-                Click();                
+                EditEmployee();
                 this.Close();
             }
         }
+
+        private void EditEmployee()
+        {
+            Button1.Content = "Изменить";
+            using (MyDbContext myDbContext = new MyDbContext())
+            {
+                Employee emp = myDbContext.Employees.First(n => n.Name == employee.Name);
+                emp.Name = AddEmployeTextBox.Text;
+                emp.Department = ComboBox1.Text;
+                myDbContext.SaveChanges();
+            }
+        }
+
         public async void Click()
         {
             Employee employee = new Employee();
             employee.Name = AddEmployeTextBox.Text;
-            employee.Department = ComboBox1.Text;            
+            employee.Department = ComboBox1.Text;
             MessageBox.Show("Добавлен " + employee.Name + " \n" + employee.Department);
 
             using (MyDbContext myDb = new MyDbContext())
@@ -64,8 +96,8 @@ namespace Сalculating_employee_absences
                 myDb.Employees.Add(employee);
                 await myDb.SaveChangesAsync();
             }
-           
+
         }
-      
+
     }
 }

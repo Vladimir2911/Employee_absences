@@ -30,14 +30,17 @@ namespace Сalculating_employee_absences
     public partial class MainWindow : Window
     {
         MyDbContext myDb = new MyDbContext();
-        List<Employee> employees;
+        ObservableCollection<Employee> employees;
 
 
         public MainWindow()
         {
+            employees = new ObservableCollection<Employee>();           
+            this.DataContext = this;
             InitializeComponent();
             InitializeCombobox();
             SetDefaultValues();
+            ListBoxEmployee.ItemsSource=employees;
         }
 
         private void InitializeCombobox()
@@ -50,55 +53,84 @@ namespace Сalculating_employee_absences
         private void SetDefaultValues()
         {
             RefreshCalendarDates();
-            LoadData();
+            LoadDataFromCollection();
+            //LoadData();
+        }
+
+        private void LoadDataFromCollection()
+        {
+            ClearCollection();
+            ListBoxEmployee.ItemsSource = employees;
+            var loadResult=LoadDataToList();
+            foreach(var item in loadResult)
+                employees.Add(item);
+        }
+
+        private void ClearCollection()
+        {
+           employees.Clear();           
         }
 
         private void AddEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
             AddEmployeDialog addEmployeDialog = new AddEmployeDialog();
             addEmployeDialog.Show();
-            LoadData();
+            LoadDataFromCollection();
         }
 
-        public void LoadData()
+        public List<Employee> LoadDataToList()
         {
             if (DepartmentCombobox.SelectedItem == null || (string)DepartmentCombobox.SelectedValue == StaticResourses.Departments[0])
             {
-                ListBoxEmployee.ItemsSource = myDb.Employees.Include(p => p.Periods).OrderBy(x => x.Name).ToList();
+                return myDb.Employees.Include(p => p.Periods).OrderBy(x => x.Name).ToList();
             }
             else
 
-                ListBoxEmployee.ItemsSource = myDb.Employees.Include(p => p.Periods).OrderBy(x => x.Name).Where(p => p.Department == DepartmentCombobox.SelectedValue.ToString()).ToList();
+                return myDb.Employees.Include(p => p.Periods).OrderBy(x => x.Name).Where(p => p.Department == DepartmentCombobox.SelectedItem.ToString()).ToList();
 
         }
+        //public void LoadData()
+        //{
+        //    if (DepartmentCombobox.SelectedItem == null || (string)DepartmentCombobox.SelectedValue == StaticResourses.Departments[0])
+        //    {
+        //        ListBoxEmployee.ItemsSource = myDb.Employees.Include(p => p.Periods).OrderBy(x => x.Name).ToList();
+        //    }
+        //    else
 
-        private void RemuveEmployeeButton_Click(object sender, RoutedEventArgs e)
+        //        ListBoxEmployee.ItemsSource = myDb.Employees.Include(p => p.Periods).OrderBy(x => x.Name).Where(p => p.Department == DepartmentCombobox.SelectedItem.ToString()).ToList();
+
+        //}
+
+        private async void RemuveEmployeeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (ListBoxEmployee.SelectedItem != null)
+            if (MessageBox.Show("Удалить сотрудника?", "Внимание!!!", MessageBoxButton.YesNo, MessageBoxImage.Warning) == MessageBoxResult.Yes)
             {
-                var itemToDelete = (Employee)ListBoxEmployee.SelectedItem;
-
-                var employee = myDb.Employees.Include(p => p.Periods).FirstOrDefault(x => x.Name == itemToDelete.Name);
-                if (employee != null)
+                if (ListBoxEmployee.SelectedItem != null)
                 {
-                    myDb.Employees.Remove(employee);
-                    myDb.SaveChanges();
-                    MessageBox.Show("Запись удалена!");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Не выбран сотрудник");
-            }
+                    var itemToDelete = (Employee)ListBoxEmployee.SelectedItem;
 
-            ClearSelectedDates();
-            RefreshCalendarDates();
-            //LoadData();
+                    var employee = myDb.Employees.Include(p => p.Periods).FirstOrDefault(x => x.Name == itemToDelete.Name);
+                    if (employee != null)
+                    {   
+                        myDb.Employees.Remove(employee);
+                        myDb.SaveChanges();
+                        MessageBox.Show("Запись удалена!");
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Не выбран сотрудник");
+                }
+
+                ClearSelectedDates();
+                RefreshCalendarDates();
+              //  LoadDataToList();
+            }
+            else return;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-
             SetDefaultValues();
         }
         #region Context menu
@@ -175,6 +207,7 @@ namespace Сalculating_employee_absences
 
             ClearSelectedDates();
             RefreshCalendarDates();
+            DisplayEmployeeInfo();
         }
 
         private void InsertDataToDb(string reason)
@@ -244,6 +277,7 @@ namespace Сalculating_employee_absences
             }
             ClearSelectedDates();
             RefreshCalendarDates();
+            DisplayEmployeeInfo();
         }
 
         private bool CheckAvalibleDate(Employee employee, List<DateTime> absencePeriod)
@@ -305,7 +339,7 @@ namespace Сalculating_employee_absences
 
             if (xlApp == null)
             {
-                MessageBox.Show("Excel не установлен!!");
+                MessageBox.Show("ExcelSaver не установлен!!");
                 return;
             }
 
@@ -398,22 +432,7 @@ namespace Сalculating_employee_absences
             Marshal.ReleaseComObject(xlApp);
 
             MessageBox.Show("Файл создан, вы можете его найти в текущей папке. файл Отпуск.xls");
-
-            /*            Employee selectedItem = (Employee)ListBoxEmployee.SelectedItem;
-                        StringBuilder outputString = new StringBuilder();
-                        var instance = myDb.Employees.Include(x => x.Periods).FirstOrDefault(x => x.Name == selectedItem.Name);
-
-                        outputString.AppendLine(instance.Department);
-                        outputString.AppendLine(instance.Name);
-                        foreach (var absPeriod in instance.Periods)
-                        {
-                            outputString.Append($"Сотрудник отсутствовал на работе с {absPeriod.FirstDay.ToShortDateString()} по {absPeriod.FirstDay.AddDays(absPeriod.DaysCount - 1).ToShortDateString()}" +
-                                $" в течении {absPeriod.DaysCount} днея(й). {absPeriod.Reason}");
-                            if (absPeriod.DateNote != "")
-                                outputString.AppendLine($"примечание: {absPeriod.DateNote}");
-                            else outputString.AppendLine();
-                        }
-                        TextBoxStatistic.Text = outputString.ToString();*/
+           
         }
 
         private void ListBoxEmployee_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -446,7 +465,8 @@ namespace Сalculating_employee_absences
 
         private void DepartmentCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            LoadData();
+            //LoadData();
+            LoadDataFromCollection();
 
         }
 
@@ -459,6 +479,32 @@ namespace Сalculating_employee_absences
         private void TextBoxStatistic_TextChanged(object sender, TextChangedEventArgs e)
         {
 
+        }
+
+        private void MenuRenameEmployee_Click(object sender, RoutedEventArgs e)
+        {
+            EmployeeEdit();
+            // LoadData();
+            LoadDataFromCollection();
+        }
+
+        private void MenuChangeDepartment_Click(object sender, RoutedEventArgs e)
+        {
+            EmployeeEdit();
+            //LoadData();
+             LoadDataFromCollection();
+        }
+
+        private void MenuRefreshList_Click(object sender, RoutedEventArgs e)
+        {
+            SetDefaultValues();
+        }
+
+        private  void EmployeeEdit()
+        {
+            var employeeToEdit = myDb.Employees.Include(x => x.Periods).FirstOrDefault(x => x.Name == ((Employee)ListBoxEmployee.SelectedItem).Name);
+            AddEmployeDialog edit= new AddEmployeDialog(employeeToEdit);           
+            edit.Show();            
         }
     }
 }
