@@ -6,8 +6,9 @@
     <RootNamespace>Сalculating_employee_absences</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>Image\1.ico</ApplicationIcon>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <ApplicationIcon>Image\1.ico</ApplicationIcon>
+    <IncludeSymbols>False</IncludeSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -19,6 +20,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Image\Delete.jpg" />
+    <None Remove="Image\Family.jpg" />
+    <None Remove="Image\Health.jpg" />
+    <None Remove="Image\Unknown.jpg" />
+    <None Remove="Image\Vacation.png" />
     <None Remove="Reload.png" />
   </ItemGroup>
 
@@ -35,11 +41,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="Image\1.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="ModelsToView\" />
+    <Resource Include="Image\1.ico" />
   </ItemGroup>
 
   <ItemGroup>
@@ -52,7 +54,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Image\Delete.jpg" />
+    <Resource Include="Image\Family.jpg" />
+    <Resource Include="Image\Health.jpg" />
     <Resource Include="Image\Reload.png" />
+    <Resource Include="Image\Unknown.jpg" />
+    <Resource Include="Image\Vacation.png" />
   </ItemGroup>
 
 </Project>

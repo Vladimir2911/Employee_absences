@@ -7,11 +7,11 @@
         mc:Ignorable="d"
         Title="Добавление нового сотрудника" Height="180" Width="590" WindowStyle="ToolWindow" HorizontalAlignment="Center" VerticalAlignment="Center">
     <Grid Margin="0,0,0,19" HorizontalAlignment="Center">
-        <Button Name="Button1" Content="Добавить " HorizontalAlignment="Left" Height="26" Margin="0,93,0,0" VerticalAlignment="Top" Width="158" RenderTransformOrigin="0.485,0.573" Click="Button_Click_1" FontFamily="Arial" FontSize="14"/>
+        <Button Name="ConfirmButton" Content="Сохранить" HorizontalAlignment="Left" Height="26" Margin="0,93,0,0" VerticalAlignment="Top" Width="158" RenderTransformOrigin="0.485,0.573" Click="ConfirmButton_Click" FontFamily="Arial" FontSize="14"/>
         <TextBox Name="AddEmployeTextBox" Height="30" Margin="58,10,10,0" TextWrapping="Wrap" VerticalAlignment="Top" FontSize="14" FontFamily="Arial" VerticalContentAlignment="Center"/>
         <Label Content="Ф.И.О. " Height="30" Margin="0,10,489,0" VerticalAlignment="Top" FontFamily="Arial" FontSize="14"/>
-        <Button Content="Отмена" HorizontalAlignment="Left" Height="26" Margin="378,93,0,0" VerticalAlignment="Top" Width="155" RenderTransformOrigin="0.485,0.573" Click="Button_Click" FontFamily="Arial" FontSize="14"/>
-        <ComboBox x:Name="ComboBox1" SelectedValue="Выберите отдел" Height="33" Margin="0,45,10,0" VerticalAlignment="Top" SelectedItem="{Binding ElementName=comboBoxItem, Mode=OneWay}" FontFamily="Arial" FontSize="14" VerticalContentAlignment="Center"/>
+        <Button Content="Отмена" HorizontalAlignment="Left" Height="26" Margin="378,93,0,0" VerticalAlignment="Top" Width="155" RenderTransformOrigin="0.485,0.573" Click="CancelButton_Click" FontFamily="Arial" FontSize="14"/>
+        <ComboBox x:Name="ComboBox1" SelectedValue="Выберите отдел" Height="33" Margin="0,45,10,0" VerticalAlignment="Top" FontFamily="Arial" FontSize="14" VerticalContentAlignment="Center"/>
 
     </Grid>
 </Window>

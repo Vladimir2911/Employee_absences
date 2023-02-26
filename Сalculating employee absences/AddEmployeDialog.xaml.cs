@@ -1,17 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Сalculating_employee_absences.Models;
 
 
@@ -20,34 +9,42 @@ namespace Сalculating_employee_absences
     /// <summary>
     /// Логика взаимодействия для AddEmployeDialog.xaml
     /// </summary>
-    public partial class AddEmployeDialog : Window
+    public partial class AddEmployeDialog : System.Windows.Window
     {
-        bool editMode = false;
-        Employee employee;
-        public AddEmployeDialog()
+        MainWindow _window { get; set; }
+        readonly bool _editMode;
+
+        private Employee _employee;
+
+        public AddEmployeDialog(MainWindow window)
         {
-            editMode = false;
+            _window = window;
+            _editMode = false;
             InitializeComponent();
             ComboBox1.ItemsSource = StaticResourses.Departments;
         }
-        public AddEmployeDialog(Employee employee)
+
+        public AddEmployeDialog(MainWindow window, Employee employee)
         {
-            InitializeComponent(); 
+            InitializeComponent();
             ComboBox1.ItemsSource = StaticResourses.Departments;
-            this.employee = employee;
-            editMode = true;
+            _window = window;
+            _employee = employee;
+            _editMode = true;
             AddEmployeTextBox.Text = employee.Name;
-            ComboBox1.SelectedItem = employee.Department;           
+            ComboBox1.SelectedItem = employee.Department;
+
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void CancelButton_Click(object sender, RoutedEventArgs e)
         {
-            this.Close();
+            Close();
+            _window.Close();
         }
 
-        public async void Button_Click_1(object sender, RoutedEventArgs e)
+        public void ConfirmButton_Click(object sender, RoutedEventArgs e)
         {
-            if (!editMode)
+            if (!_editMode)
             {
                 if (AddEmployeTextBox.Text.IsNullOrEmpty())
                 {
@@ -61,43 +58,43 @@ namespace Сalculating_employee_absences
                 }
                 else
                 {
-                    Click();
-                    this.Close();
+                    AddNewEmployee();
+                    Close();
                 }
             }
             else
             {
                 EditEmployee();
-                this.Close();
+                Close();
             }
         }
 
         private void EditEmployee()
         {
-            Button1.Content = "Изменить";
             using (MyDbContext myDbContext = new MyDbContext())
             {
-                Employee emp = myDbContext.Employees.First(n => n.Name == employee.Name);
+                Employee emp = myDbContext.Employees.First(n => n.Name == _employee.Name);     
+                _window.Employees.FirstOrDefault(_employee).Name = AddEmployeTextBox.Text;
+                _window.Employees.FirstOrDefault(_employee).Department = ComboBox1.Text;
                 emp.Name = AddEmployeTextBox.Text;
                 emp.Department = ComboBox1.Text;
                 myDbContext.SaveChanges();
+                _window.ListBoxEmployee.Items.Refresh(); 
             }
         }
-
-        public async void Click()
+        public void AddNewEmployee()
         {
-            Employee employee = new Employee();
-            employee.Name = AddEmployeTextBox.Text;
-            employee.Department = ComboBox1.Text;
-            MessageBox.Show("Добавлен " + employee.Name + " \n" + employee.Department);
-
             using (MyDbContext myDb = new MyDbContext())
             {
+                Employee employee = new Employee();
+                employee.Name = AddEmployeTextBox.Text;
+                employee.Department = ComboBox1.Text;
+                _window.Employees.Add(employee);
+                MessageBox.Show("Добавлен " + employee.Name + " \n" + employee.Department);
                 myDb.Employees.Add(employee);
-                await myDb.SaveChangesAsync();
+                myDb.SaveChanges();
+                _window.ListBoxEmployee.Items.Refresh();
             }
-
         }
-
     }
 }

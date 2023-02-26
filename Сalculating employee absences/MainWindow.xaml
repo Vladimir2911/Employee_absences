@@ -5,83 +5,120 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Сalculating_employee_absences"
         mc:Ignorable="d"
-        Title="График отсутствия сотрудников" Height="768" Width="1366">
-    <Grid Margin="0,0,-30,0" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" RenderTransformOrigin="0.5,0.5">
-
-        <Grid>
-            <Calendar Name="CalendarJanuary" HorizontalAlignment="Left" Height="171" Margin="236,29,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarFabruary" HorizontalAlignment="Left" Height="171" Margin="419,29,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarMarch" HorizontalAlignment="Left" Height="171" Margin="600,29,0,0" VerticalAlignment="Top" Width="186" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarApril" HorizontalAlignment="Left" Height="171" Margin="785,29,0,0" VerticalAlignment="Top" Width="189" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarMay" HorizontalAlignment="Left" Height="171" Margin="969,29,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarJune" HorizontalAlignment="Left" Height="171" Margin="1152,29,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarJuly" HorizontalAlignment="Left" Height="171" Margin="236,194,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarAugust" HorizontalAlignment="Left" Height="171" Margin="419,194,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarSeptember" HorizontalAlignment="Left" Height="171" Margin="600,194,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarOctober" HorizontalAlignment="Left" Height="171" Margin="785,194,0,0" VerticalAlignment="Top" Width="189" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarNovember" HorizontalAlignment="Left" Height="171" Margin="969,194,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Calendar Name="CalendarDesember" HorizontalAlignment="Left" Height="171" Margin="1152,194,0,0" VerticalAlignment="Top" Width="188" SelectionMode="SingleRange"/>
-            <Grid HorizontalAlignment="Left" Height="740" VerticalAlignment="Top" Width="240"/>
-            <TextBox Name="TextBoxNote" ToolTip="Примечание" HorizontalAlignment="Left" Height="30" Margin="240,367,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="1095" RenderTransformOrigin="0.498,-0.271"/>
-            <ComboBox Name="YearSelectionComboBox" HorizontalAlignment="Left" ToolTip="Год для отображения данных по сотрудникам"  Margin="343,7,0,0" VerticalAlignment="Top" Width="179" SelectionChanged="YearSelectionComboBox_SelectionChanged"/>
-            <ComboBox Name="DepartmentCombobox" SelectedValue="Выберите отдел" ToolTip="Категория сотрудников для отображения" HorizontalAlignment="Left" Height="22" Margin="10,7,0,0" VerticalAlignment="Top" Width="210" SelectionChanged="DepartmentCombobox_SelectionChanged"/>
-
+        Title="График отсутствия сотрудников" Height="768" Width="1366" DataContext="{Binding Mode=OneWay, RelativeSource={RelativeSource Self}}">
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" Grid.RowSpan="3" Margin="5,0,5,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+                <ColumnDefinition></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <Viewbox Grid.Column="0">
+                <Calendar Name="CalendarJanuary"  SelectionMode="SingleRange" Margin="5,30,5,0" />
+            </Viewbox>
+            <Viewbox Grid.Column="1">
+                <Calendar Name="CalendarFabruary"  SelectionMode="SingleRange" Margin="5,30,5,0"/>
+            </Viewbox>
+            <Viewbox Grid.Column="2">
+                <Calendar Name="CalendarMarch"  SelectionMode="SingleRange" Margin="5,30,5,0"/>
+            </Viewbox>
+            <Viewbox Grid.Column="3">
+                <Calendar Name="CalendarApril"  SelectionMode="SingleRange" Margin="5,30,5,0"/>
+            </Viewbox>
+            <Viewbox Grid.Column="4">
+                <Calendar Name="CalendarMay"  SelectionMode="SingleRange" Margin="5,30,5,0" />
+            </Viewbox>
+            <Viewbox Grid.Column="5">
+                <Calendar Name="CalendarJune"  SelectionMode="SingleRange" Margin="5,30,5,0"/>
+            </Viewbox>
+            <Viewbox Grid.Row="1" Grid.Column="0" VerticalAlignment="Top" >
+                <Calendar Name="CalendarJuly" SelectionMode="SingleRange"  Margin="5,0,5,0"/>
+            </Viewbox>
+            <Viewbox Grid.Row="1" Grid.Column="1" VerticalAlignment="Top">
+                <Calendar Name="CalendarAugust"  SelectionMode="SingleRange"  Margin="5,0,5,0"/>
+            </Viewbox>
+            <Viewbox Grid.Row="1" Grid.Column="2" VerticalAlignment="Top">
+                <Calendar Name="CalendarSeptember"  SelectionMode="SingleRange" Margin="5,0,5,0"/>
+            </Viewbox>
+            <Viewbox Grid.Row="1" Grid.Column="3" VerticalAlignment="Top">
+                <Calendar Name="CalendarOctober"  SelectionMode="SingleRange" Margin="5,0,5,0"/>
+            </Viewbox>
+            <Viewbox Grid.Row="1" Grid.Column="4" VerticalAlignment="Top">
+                <Calendar Name="CalendarNovember"  SelectionMode="SingleRange" Margin="5,0,5,0"/>
+            </Viewbox>
+            <Viewbox Grid.Row="1" Grid.Column="5" VerticalAlignment="Top">
+                <Calendar Name="CalendarDesember"  SelectionMode="SingleRange" Margin="5,0,5,0"/>
+            </Viewbox>
+            <TextBox Name="TextBoxNote" ToolTip="Примечание" Grid.Row="1" Grid.ColumnSpan="6" Height="30" Margin="0,5,0,5" Text="" VerticalAlignment="Bottom"/>
+            <ComboBox Name="YearSelectionComboBox" ToolTip="Год для отображения данных по сотрудникам" Grid.Row="0" Grid.Column="0" Height="20" VerticalAlignment="Top" Margin="5,0,0,0" SelectionChanged="YearSelectionComboBox_SelectionChanged"/>
             <Grid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="MenuHealthReason" Header="По состоянию здоровья" Click="MenuHealthReason_Click">
                         <MenuItem.Icon>
-                            <Image Source="Health.png" />
+                            <Image Source="Image/Health.jpg" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Name="MenuFamilyReason" Header="По семейным обстоятельствам" Click="MenuFamilyReason_Click">
                         <MenuItem.Icon>
-                            <Image Source="Family.png" />
+                            <Image Source="Image/Family.jpg" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Name="MenuVacation" Header="Отпуск" Click="MenuVacation_Click" >
                         <MenuItem.Icon>
-                            <Image Source="Vacation.png" />
+                            <Image Source="Image/Vacation.png" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Name="MenuUnknownReason" Header="По не выясненым причинам" Click="MenuUnknownReason_Click">
                         <MenuItem.Icon>
-                            <Image Source="Unknown.png" />
+                            <Image Source="Image/Unknown.jpg" />
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Name="MenuDeleteRecord" Header="Удалить запись" Click="MenuDeleteRecord_Click" >
                         <MenuItem.Icon>
-                            <Image Source="Image\Delete.PNG"/>
+                            <Image Source="Image/Delete.jpg"/>
                         </MenuItem.Icon>
                     </MenuItem>
                 </ContextMenu>
             </Grid.ContextMenu>
         </Grid>
-
-        <ListBox Name="ListBoxEmployee" HorizontalAlignment="Left" Height="591" Margin="10,32,0,0" VerticalAlignment="Top" Width="210" SelectionChanged="ListBoxEmployee_SelectionChanged">
+        <ComboBox Name="DepartmentCombobox" SelectedValue="Выберите отдел" ToolTip="Категория сотрудников для отображения" Grid.Row="0" HorizontalAlignment="Stretch" Height="22" Margin="10,0,0,0" VerticalAlignment="Top" SelectionChanged="DepartmentCombobox_SelectionChanged"/>
+        <ListBox Name="ListBoxEmployee" ItemsSource="{Binding Employees}" Margin="10,25,0,5" Grid.RowSpan="4" SelectionChanged="ListBoxEmployee_SelectionChanged">
             <ListBox.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="MenuRenameEmployee" Header="Изменить имя" Click="MenuRenameEmployee_Click" />
                     <MenuItem Name="MenuChangeDepartment" Header="Изменить отдел" Click="MenuChangeDepartment_Click" />
                     <MenuItem Name="MenuRefreshList" Header="Обновить список" Click="MenuRefreshList_Click" />
                 </ContextMenu>
-            </ListBox.ContextMenu>
+            </ListBox.ContextMenu>           
         </ListBox>
 
-        <TextBox Name="TextBoxStatistic" HorizontalAlignment="Left" Height="120" Margin="240,404,0,0" TextWrapping="Wrap" Text="Статистика" VerticalAlignment="Top" Width="1095"/>
-        <Button Content="Добавить сотрудника" Name ="AddEmployeeButton"  HorizontalAlignment="Left" Height="20" Margin="13,658,0,0" VerticalAlignment="Top" Width="167" Click="AddEmployeeButton_Click"/>
-        <Button Content="Удалить сотрудника" Name ="RemuveEmployeeButton"  HorizontalAlignment="Left" Height="20" Margin="13,683,0,0" VerticalAlignment="Top" Width="167" Click="RemuveEmployeeButton_Click"/>
-        <Button Content="" HorizontalAlignment="Left" Height="33" Margin="187,692,0,0" VerticalAlignment="Top" Width="33" RenderTransformOrigin="0.5,0.5" Click="Button_Click">
-
-        </Button>
-        <Button Content="Выгрузить в Excel" Name="StatButon" HorizontalAlignment="Left" Height="20" Margin="13,709,0,0" VerticalAlignment="Top" Width="165" Click="StatButon_Click" RenderTransformOrigin="0.5,0.5">
-            <Button.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform/>
-                    <SkewTransform AngleX="2.603"/>
-                    <RotateTransform/>
-                    <TranslateTransform X="0.705"/>
-                </TransformGroup>
-            </Button.RenderTransform>
+        <TextBox Name="TextBoxStatistic"  Text="Статистика" Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="4" Margin="5,0,5,10"/>
+        <Button Content="Добавить сотрудника" Name ="AddEmployeeButton"    Grid.Row="4"  Height="25" Margin="5,5,80,50" Click="AddEmployeeButton_Click"/>
+        <Button Content="Удалить сотрудника"  Name ="RemuveEmployeeButton" Grid.Row="4"  Height="25" Margin="5,40,80,30" Click="RemuveEmployeeButton_Click"/>
+        <Button Content="Выгрузить в Excel"   Name="UploadToExcelButon"    Grid.Row="4"  Height="25" Margin="5,72,80,5"  Click="UploadToExcelButon_Click"/>
+        <Button Grid.Row="4" Height="35" VerticalAlignment="Center" HorizontalAlignment="Right" Width="35" Margin="5,5,15,5" Click="RefreshButton_Click">
+            <Image Source="Image/Reload.png"/>
         </Button>
     </Grid>
 </Window>
