@@ -73,13 +73,14 @@ namespace Сalculating_employee_absences
         {
             using (MyDbContext myDbContext = new MyDbContext())
             {
-                Employee emp = myDbContext.Employees.First(n => n.Name == _employee.Name);     
+                Employee emp = myDbContext.Employees.First(n => n.Name == _employee.Name);
                 _window.Employees.FirstOrDefault(_employee).Name = AddEmployeTextBox.Text;
                 _window.Employees.FirstOrDefault(_employee).Department = ComboBox1.Text;
                 emp.Name = AddEmployeTextBox.Text;
                 emp.Department = ComboBox1.Text;
-                myDbContext.SaveChanges();
-                _window.ListBoxEmployee.Items.Refresh(); 
+                myDbContext.SaveChanges();                
+                _window.ListBoxEmployee.Items.Refresh();
+                this.Close();
             }
         }
         public void AddNewEmployee()

@@ -40,7 +40,7 @@ namespace Сalculating_employee_absences.Models
         }
 
         public override string ToString()
-        {
+        {            
             return Name;
         }
 

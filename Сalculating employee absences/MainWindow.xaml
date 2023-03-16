@@ -70,8 +70,8 @@
             <Viewbox Grid.Row="1" Grid.Column="5" VerticalAlignment="Top">
                 <Calendar Name="CalendarDesember"  SelectionMode="SingleRange" Margin="5,0,5,0"/>
             </Viewbox>
-            <TextBox Name="TextBoxNote" ToolTip="Примечание" Grid.Row="1" Grid.ColumnSpan="6" Height="30" Margin="0,5,0,5" Text="" VerticalAlignment="Bottom"/>
-            <ComboBox Name="YearSelectionComboBox" ToolTip="Год для отображения данных по сотрудникам" Grid.Row="0" Grid.Column="0" Height="20" VerticalAlignment="Top" Margin="5,0,0,0" SelectionChanged="YearSelectionComboBox_SelectionChanged"/>
+            <TextBox Name="TextBoxNote" ToolTip="Примечание" Grid.Row="1" Grid.ColumnSpan="6" Height="30" Margin="0,5,0,5" Text="" VerticalAlignment="Bottom" FontSize="14"/>
+            <ComboBox Name="YearSelectionComboBox" ToolTip="Год для отображения данных по сотрудникам" Grid.Row="0" Grid.Column="0" Height="22" VerticalAlignment="Top" Margin="5,0,0,0" SelectionChanged="YearSelectionComboBox_SelectionChanged"/>
             <Grid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Name="MenuHealthReason" Header="По состоянию здоровья" Click="MenuHealthReason_Click">
@@ -103,20 +103,24 @@
             </Grid.ContextMenu>
         </Grid>
         <ComboBox Name="DepartmentCombobox" SelectedValue="Выберите отдел" ToolTip="Категория сотрудников для отображения" Grid.Row="0" HorizontalAlignment="Stretch" Height="22" Margin="10,0,0,0" VerticalAlignment="Top" SelectionChanged="DepartmentCombobox_SelectionChanged"/>
-        <ListBox Name="ListBoxEmployee" ItemsSource="{Binding Employees}" Margin="10,25,0,5" Grid.RowSpan="4" SelectionChanged="ListBoxEmployee_SelectionChanged">
+        <ListBox Name="ListBoxEmployee" ItemsSource="{Binding Employees}" Margin="10,25,0,5" Grid.RowSpan="4" SelectionChanged="ListBoxEmployee_SelectionChanged" FontSize="14">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Name="MenuRenameEmployee" Header="Изменить имя" Click="MenuRenameEmployee_Click" />
-                    <MenuItem Name="MenuChangeDepartment" Header="Изменить отдел" Click="MenuChangeDepartment_Click" />
+                    <MenuItem Name="MenuRenameEmployee" Header="Редактировать сотрудника" Click="MenuRenameEmployee_Click" />
                     <MenuItem Name="MenuRefreshList" Header="Обновить список" Click="MenuRefreshList_Click" />
                 </ContextMenu>
-            </ListBox.ContextMenu>           
+            </ListBox.ContextMenu>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
         </ListBox>
 
-        <TextBox Name="TextBoxStatistic"  Text="Статистика" Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="4" Margin="5,0,5,10"/>
-        <Button Content="Добавить сотрудника" Name ="AddEmployeeButton"    Grid.Row="4"  Height="25" Margin="5,5,80,50" Click="AddEmployeeButton_Click"/>
-        <Button Content="Удалить сотрудника"  Name ="RemuveEmployeeButton" Grid.Row="4"  Height="25" Margin="5,40,80,30" Click="RemuveEmployeeButton_Click"/>
-        <Button Content="Выгрузить в Excel"   Name="UploadToExcelButon"    Grid.Row="4"  Height="25" Margin="5,72,80,5"  Click="UploadToExcelButon_Click"/>
+        <TextBox Name="TextBoxStatistic"  Text="Статистика" Grid.Row="3" Grid.Column="1" Grid.RowSpan="2" Grid.ColumnSpan="4" Margin="5,0,5,10" FontSize="14"/>
+        <Button Content="Добавить сотрудника" Name ="AddEmployeeButton"    Grid.Row="4"  Height="25" Margin="5,5,80,50" Click="AddEmployeeButton_Click" FontSize="14"/>
+        <Button Content="Удалить сотрудника"  Name ="RemuveEmployeeButton" Grid.Row="4"  Height="25" Margin="5,40,80,30" Click="RemuveEmployeeButton_Click" FontSize="14"/>
+        <Button Content="Выгрузить в Excel"   Name="UploadToExcelButon"    Grid.Row="4"  Height="25" Margin="5,72,80,5"  Click="UploadToExcelButon_Click" FontSize="14"/>
         <Button Grid.Row="4" Height="35" VerticalAlignment="Center" HorizontalAlignment="Right" Width="35" Margin="5,5,15,5" Click="RefreshButton_Click">
             <Image Source="Image/Reload.png"/>
         </Button>

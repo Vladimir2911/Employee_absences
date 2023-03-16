@@ -3,6 +3,7 @@ using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -26,12 +27,12 @@ namespace Сalculating_employee_absences
 
 
         public MainWindow()
-        {           
-            Employees = new ObservableCollection<Employee>();           
+        {
+            Employees = new ObservableCollection<Employee>();
             InitializeComponent();
             InitializeCombobox();
-            SetDefaultValues();             
-           // ListBoxEmployee.ItemsSource = Employees;
+            SetDefaultValues();
+            // ListBoxEmployee.ItemsSource = Employees;
         }
 
         private void InitializeCombobox()
@@ -99,7 +100,7 @@ namespace Сalculating_employee_absences
                 {
                     MessageBox.Show("Не выбран сотрудник");
                 }
-                ClearSelectedDates();                
+                ClearSelectedDates();
                 SetDefaultValues();
             }
             else return;
@@ -342,7 +343,7 @@ namespace Сalculating_employee_absences
             xlWorkSheet.Cells[1, 17] = "Общее количество отсутствия по семейным обстоятельствам (СО к.д.)";
             xlWorkSheet.Cells[1, 18] = "Отсутствие по невыясненным причинам (НВ к.д.)";
             #endregion
-            var employee = myDb.Employees.Include(p => p.Periods).OrderBy(d => d.Department).ThenBy(d => d.Name).ToList();
+            var employee = myDb.Employees.Include(p => p.Periods).OrderBy(x => x.Department).ThenBy(n => n.Name).ToList();
 
             for (int i = 0; i < employee.Count; i++)
             {
@@ -350,7 +351,7 @@ namespace Сalculating_employee_absences
                 xlWorkSheet.Cells[i + 2, 1] = i + 1;
                 xlWorkSheet.Cells[i + 2, 2] = employee[i].Name;
                 StringBuilder sb = new StringBuilder();
-                foreach (Period period in employee[i].Periods)
+                foreach (Period period in employee[i].Periods.OrderBy(x=>x.FirstDay))
                 {
                     string shortReason = string.Empty;
                     switch (period.Reason)
@@ -390,31 +391,44 @@ namespace Сalculating_employee_absences
                         xlWorkSheet.Cells[i + 2, period.FirstDay.Month + 2] = sb.ToString();
                     }
                     xlWorkSheet.Cells[i + 2, 15] = dayVacation;
+                    if (dayVacation == 28) xlWorkSheet.Cells[i + 2, 15].Interior.Color = Color.MediumAquamarine;
+                    if (dayVacation > 28) xlWorkSheet.Cells[i + 2, 15].Interior.Color = Color.Coral;
+
                     xlWorkSheet.Cells[i + 2, 16] = dayHealth;
+                    if (dayHealth > 14) xlWorkSheet.Cells[i + 2, 16].Interior.Color = Color.Coral;
                     xlWorkSheet.Cells[i + 2, 17] = dayFamily;
+                    if (dayFamily > 7) xlWorkSheet.Cells[i + 2, 17].Interior.Color = Color.Coral;
                     xlWorkSheet.Cells[i + 2, 18] = dayUnknown;
+                    if (dayUnknown > 5) xlWorkSheet.Cells[i + 2, 18].Interior.Color = Color.Coral;
+                    if (dayUnknown + dayFamily + dayHealth > 16)
+                    {
+                        xlWorkSheet.Cells[i + 2, 19] = dayUnknown + dayFamily + dayHealth + " к.д. отсутствий";
+                        xlWorkSheet.Cells[i + 2, 19].Interior.Color = Color.Coral;
+                    }
                 }
             }
+
             Range rng = xlWorkSheet.get_Range("B:B", System.Type.Missing);
             rng.EntireColumn.ColumnWidth = 23;
-            rng.EntireColumn.HorizontalAlignment = HorizontalAlignment.Center;
-            rng.EntireColumn.VerticalAlignment = VerticalAlignment.Center;
             rng = xlWorkSheet.get_Range("A:A", System.Type.Missing);
             rng.EntireColumn.ColumnWidth = 4;
-            rng.EntireColumn.HorizontalAlignment = HorizontalAlignment.Center;
-            rng.EntireColumn.VerticalAlignment = VerticalAlignment.Center;
             rng = xlWorkSheet.get_Range("C:N", System.Type.Missing);
             rng.EntireColumn.ColumnWidth = 11;
-            rng.EntireColumn.HorizontalAlignment = HorizontalAlignment.Center;
-            rng.EntireColumn.VerticalAlignment = VerticalAlignment.Center;
             rng.WrapText = true;
-            rng = xlWorkSheet.get_Range("N:AD", System.Type.Missing);
-            rng.EntireColumn.ColumnWidth = 14;
-            rng.EntireColumn.HorizontalAlignment = HorizontalAlignment.Center;
-            rng.EntireColumn.VerticalAlignment = VerticalAlignment.Center;
+            rng = xlWorkSheet.get_Range("O:S", System.Type.Missing);
+            rng.EntireColumn.ColumnWidth = 15.8;
             rng.WrapText = true;
+            rng = xlWorkSheet.get_Range("A:R", System.Type.Missing);
 
-            xlWorkBook.SaveAs($"{Directory.GetCurrentDirectory()}\\{YearSelectionComboBox.SelectedValue}Отпуск.xls",
+            rng.get_Range("A1", "R" + (employee.Count + 1));
+            rng.Borders.ColorIndex = 0;
+            rng.Borders.LineStyle = Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous;
+            rng.Borders.Weight = Microsoft.Office.Interop.Excel.XlBorderWeight.xlThin;
+         
+
+
+
+            xlWorkBook.SaveAs($"{Directory.GetCurrentDirectory()}\\График_{YearSelectionComboBox.SelectedValue}.xls",
                                  Excel.XlFileFormat.xlWorkbookNormal, misValue, misValue, misValue, misValue,
                                  Excel.XlSaveAsAccessMode.xlExclusive, misValue, misValue, misValue, misValue, misValue);
             xlWorkBook.Close(true, misValue, misValue);
@@ -425,10 +439,10 @@ namespace Сalculating_employee_absences
             Marshal.ReleaseComObject(xlWorkBook);
             Marshal.ReleaseComObject(xlApp);
 
-            if (MessageBox.Show($"Файл {YearSelectionComboBox.SelectedValue}Отпуск.xls создан в текущей папке. Открыть файл???", "Открыть файл???",
+            if (MessageBox.Show($"Файл График_{YearSelectionComboBox.SelectedValue}.xls создан в текущей папке.\nОткрыть файл???", "!!!",
                MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
-                OpenExcellFile($"{Directory.GetCurrentDirectory()}\\{YearSelectionComboBox.SelectedValue}Отпуск.xls");
+                OpenExcellFile($"{Directory.GetCurrentDirectory()}\\График_{YearSelectionComboBox.SelectedValue}.xls");
             }
 
         }
@@ -462,15 +476,15 @@ namespace Сalculating_employee_absences
                 }
                 outputString.AppendLine(instance.Department);
                 outputString.AppendLine(instance.Name);
-                foreach (var absPeriod in instance.Periods)
+                foreach (var absPeriod in instance.Periods.OrderBy(x=>x.FirstDay))
                 {
                     if (absPeriod.FirstDay.Year == (int)YearSelectionComboBox.SelectedItem)
                     {
                         outputString.Append($"Сотрудник отсутствовал на работе с {absPeriod.FirstDay.ToShortDateString()} по" +
                             $" {absPeriod.FirstDay.AddDays(absPeriod.DaysCount - 1).ToShortDateString()} " +
-                            $"в течении {absPeriod.DaysCount} днея(й). {absPeriod.Reason}");
+                            $"в течение {absPeriod.DaysCount} к.д. {absPeriod.Reason}.");
                         if (absPeriod.DateNote != string.Empty)
-                            outputString.AppendLine($"примечание: {absPeriod.DateNote}");
+                            outputString.AppendLine($" примечание: {absPeriod.DateNote}");
                         else outputString.AppendLine();
                     }
                 }
@@ -479,9 +493,9 @@ namespace Сalculating_employee_absences
         }
 
         private void DepartmentCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {        
+        {
             LoadDataFromCollection();
-        }        
+        }
 
         private void YearSelectionComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -490,12 +504,6 @@ namespace Сalculating_employee_absences
         }
 
         private void MenuRenameEmployee_Click(object sender, RoutedEventArgs e)
-        {
-            EmployeeEdit();           
-            LoadDataFromCollection();
-        }
-
-        private void MenuChangeDepartment_Click(object sender, RoutedEventArgs e)
         {
             EmployeeEdit();
             LoadDataFromCollection();
@@ -510,7 +518,7 @@ namespace Сalculating_employee_absences
         {
             var employeeToEdit = myDb.Employees.Include(e => e.Periods).FirstOrDefault(x => x.Name == ((Employee)ListBoxEmployee.SelectedItem).Name);
             AddEmployeDialog edit = new AddEmployeDialog(this, employeeToEdit);
-            edit.Show();           
+            edit.Show();
         }
     }
 }
